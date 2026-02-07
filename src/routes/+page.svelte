@@ -1,23 +1,49 @@
 <script lang="ts">
 	import Header from './Header.svelte';
-	//set state with default value kai
-	let name = $state('kai');
+	let formState = $state({
+		name: '',
+		birthday: '',
+		step: 0,
+		error: ' '
+	})
 
-	let status: 'OPEN' | 'CLOSED' = $state('OPEN');
-
-    let full_name = $derived( name + " " + "zeng")
 </script>
 
-<Header {name} />
-<h2>{full_name}</h2>
+<main>
+	<p>Step: {formState.step}</p>
+	{#if formState.error} 
+		<p class="error">{formState.error}</p> 
+	{/if}
 
-<input type="text" bind:value={name} />
-<p>The store is now {status}</p>
-<button
-	onclick={() => {
-		status = status === 'OPEN' ? 'CLOSED' : 'OPEN';
-	}}>Toggle Status</button
->
+
+
+	{#if formState.step === 0}
+		<div>
+			<label for="name"> Your Name </label>
+			<input type="text" id="name" bind:value={formState.name}>
+
+		</div>
+
+		<button onclick={ 
+			() => {
+				if(formState.name != ''){
+					formState.step += 1;
+					formState.error ='';
+				}else{
+					formState.error = 'Ur name is empty. Please write your name';
+				}
+			}
+		}> Next </button>
+
+	{/if}
+</main>
 
 <style>
+
+
+
+	.error {
+		color: red;
+	}
 </style>
+
