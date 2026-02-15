@@ -1,49 +1,36 @@
 <script lang="ts">
-	import Header from './Header.svelte';
 	let formState = $state({
 		name: '',
 		birthday: '',
 		step: 0,
-		error: ' '
-	})
+		error: ' ',
+	});
+
+	const QUESTIONS = [
+		{
+			question: 'What is your name',
+			id: 'name',
+			type: 'text'
+		}
+	]
 
 </script>
 
 <main>
-	<p>Step: {formState.step}</p>
-	{#if formState.error} 
-		<p class="error">{formState.error}</p> 
-	{/if}
+	<p>Step: {formState.step + 1}</p>
 
+	{@render formStep({ question: 'What is your name?', id: 'name', type: 'text' })}
 
-
-	{#if formState.step === 0}
-		<div>
-			<label for="name"> Your Name </label>
-			<input type="text" id="name" bind:value={formState.name}>
-
-		</div>
-
-		<button onclick={ 
-			() => {
-				if(formState.name != ''){
-					formState.step += 1;
-					formState.error ='';
-				}else{
-					formState.error = 'Ur name is empty. Please write your name';
-				}
-			}
-		}> Next </button>
-
+	{#if formState.error}
+		<p class="error">{formState.error}</p>
 	{/if}
 </main>
 
-<style>
-
-
-
-	.error {
-		color: red;
-	}
-</style>
-
+{#snippet formStep({ question, id, type }: { type: string; id: keyof typeof formState; question: string })}
+	<article>
+		<div>
+			<label for={id}>{question}</label>
+			<input {type} {id} bind:value={formState[id]} />
+		</div>
+	</article>
+{/snippet}
